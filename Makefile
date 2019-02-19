@@ -13,10 +13,10 @@ run:
 	@./$(PROGRAM)
 
 fmt:
-	astyle --style=google -nr *.c,*.h
+	@astyle --style=google -nr *.c,*.h
 
 doc:
-	doxygen $(DOCDIR)/Doxyfile
+	@doxygen $(DOCDIR)/Doxyfile
 
 clean:
 	@echo "Cleaning..."
