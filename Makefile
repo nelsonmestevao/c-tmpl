@@ -32,7 +32,7 @@ run:
 	@./$(BIN_DIR)/$(PROGRAM)
 
 fmt:
-	@astyle --style=google -nr *.c,*.h
+	@uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c
 
 lint:
 	@splint -retvalint -I $(SRC_DIR)/*.c,*.h
