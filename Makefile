@@ -28,7 +28,7 @@ $(BLD_DIR)/%.o: %.c
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJ)
 
-run:
+run: $(BIN_DIR)/$(PROGRAM)
 	@./$(BIN_DIR)/$(PROGRAM)
 
 fmt:
