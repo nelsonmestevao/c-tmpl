@@ -5,12 +5,12 @@ LD          = gcc
 CFLAGS      = -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
 
 BIN_DIR    = bin
-SRC_DIR    = src
-DOC_DIR    = docs
 BLD_DIR    = build
+DOC_DIR    = docs
+SRC_DIR    = src
 SRC        = $(wildcard $(SRC_DIR)/*.c)
-OBJ        = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
-DEPS       = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJ))
+OBJS       = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
+DEPS       = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
 PROGRAM    = program
 
 vpath %.c $(SRC_DIR)
@@ -25,8 +25,8 @@ $(BLD_DIR)/%.d: %.c
 $(BLD_DIR)/%.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
-$(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJ)
+$(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
 run: $(BIN_DIR)/$(PROGRAM)
 	@./$(BIN_DIR)/$(PROGRAM)
