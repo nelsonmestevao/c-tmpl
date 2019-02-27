@@ -1,17 +1,14 @@
-SHELL       = /bin/sh
-detected_OS := $(shell sh -c 'uname -s 2>/dev/null || echo not')
-CC          = gcc
-LD          = gcc
-CFLAGS      = -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
-
-BIN_DIR    = bin
-BLD_DIR    = build
-DOC_DIR    = docs
-SRC_DIR    = src
-SRC        = $(wildcard $(SRC_DIR)/*.c)
-OBJS       = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
-DEPS       = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
-PROGRAM    = program
+CC      = gcc
+LD      = gcc
+CFLAGS  = -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
+BIN_DIR = bin
+BLD_DIR = build
+DOC_DIR = docs
+SRC_DIR = src
+SRC     = $(wildcard $(SRC_DIR)/*.c)
+OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
+DEPS    = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
+PROGRAM = program
 
 vpath %.c $(SRC_DIR)
 
@@ -32,7 +29,7 @@ run: $(BIN_DIR)/$(PROGRAM)
 	@./$(BIN_DIR)/$(PROGRAM)
 
 fmt:
-	@uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c
+	@uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c $(SRC_DIR)/*.h
 
 lint:
 	@splint -retvalint -I $(SRC_DIR)/*.c,*.h
