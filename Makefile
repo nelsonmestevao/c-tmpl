@@ -1,6 +1,6 @@
 CC      = gcc
 LD      = gcc
-CFLAGS  = -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
+CFLAGS  = -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
