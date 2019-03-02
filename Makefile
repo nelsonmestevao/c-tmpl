@@ -4,6 +4,7 @@ CFLAGS  = -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unus
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
+OUT_DIR = out
 SRC_DIR = src
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
@@ -54,6 +55,6 @@ clean:
 	@echo "Cleaning..."
 	@echo ""
 	@-cat .art/maid.ascii
-	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(DOC_DIR)/*
+	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(DOC_DIR)/* $(OUT_DIR)/*
 	@echo ""
 	@echo "...✓ done!"
