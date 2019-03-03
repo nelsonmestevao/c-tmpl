@@ -6,6 +6,7 @@ BLD_DIR = build
 DOC_DIR = docs
 OUT_DIR = out
 SRC_DIR = src
+TST_DIR = tests
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
 DEPS    = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
@@ -30,10 +31,13 @@ run: $(BIN_DIR)/$(PROGRAM)
 	@./$(BIN_DIR)/$(PROGRAM)
 
 fmt:
-	@uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@echo "C files:"
+	@-uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@echo "Shell files:"
+	@shfmt -l -w -i 2 .
 
 lint:
-	@splint -retvalint -I $(SRC_DIR)/*.c,*.h
+	@splint -retvalint -I $(SRC_DIR)/*.c $(SRC_DIR)/*.h
 
 leak-check: $(BIN_DIR)/$(PROGRAM)
 	@valgrind --vgdb=no --tool=memcheck --leak-check=yes ./$(BIN_DIR)/$(PROGRAM) $(input)
