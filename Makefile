@@ -32,7 +32,7 @@ run: $(BIN_DIR)/$(PROGRAM)
 
 fmt:
 	@echo "C files:"
-	@-uncrustify -c .uncrustify --no-backup $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i $(SRC_DIR)/*.c $(SRC_DIR)/*.h
 	@echo "Shell files:"
 	@shfmt -l -w -i 2 .
 
