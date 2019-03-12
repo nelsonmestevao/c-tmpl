@@ -43,7 +43,7 @@ leak-check: $(BIN_DIR)/$(PROGRAM)
 	@valgrind --vgdb=no --tool=memcheck --leak-check=yes ./$(BIN_DIR)/$(PROGRAM) $(input)
 
 doc:
-	@doxygen
+	@doxygen $(DOC_DIR)/Doxyfile
 
 test:
 	@echo "Write some tests!"
@@ -59,6 +59,6 @@ clean:
 	@echo "Cleaning..."
 	@echo ""
 	@-cat .art/maid.ascii
-	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(DOC_DIR)/* $(OUT_DIR)/*
+	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(DOC_DIR)/html $(DOC_DIR)/latex $(OUT_DIR)/*
 	@echo ""
 	@echo "...✓ done!"
