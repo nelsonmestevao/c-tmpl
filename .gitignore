@@ -55,6 +55,8 @@ dkms.conf
 # Binary, Compiled and Output
 bin/
 build/
+html/
+latex/
+log/
 out/
-
 

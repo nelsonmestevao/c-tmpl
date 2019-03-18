@@ -4,6 +4,7 @@ CFLAGS  = -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unus
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
+LOG_DIR = log
 OUT_DIR = out
 SRC_DIR = src
 TST_DIR = tests
@@ -14,9 +15,9 @@ PROGRAM = program
 
 vpath %.c $(SRC_DIR)
 
-.DEFAULT_GOAL = all
+.DEFAULT_GOAL = build
 
-.PHONY: run fmt lint leak-check doc checkdirs all clean
+.PHONY: build run fmt lint check doc test checkdirs clean
 
 $(BLD_DIR)/%.d: %.c
 	$(CC) -M $(CFLAGS) $(INCLUDES) $< -o $@
@@ -27,20 +28,27 @@ $(BLD_DIR)/%.o: %.c
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
-run: $(BIN_DIR)/$(PROGRAM)
+build: checkdirs $(BIN_DIR)/$(PROGRAM)
+
+run: build
 	@./$(BIN_DIR)/$(PROGRAM)
 
 fmt:
-	@echo "C files:"
+	@echo "C and Headers files:"
 	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i $(SRC_DIR)/*.c $(SRC_DIR)/*.h
 	@echo "Shell files:"
 	@shfmt -l -w -i 2 .
 
 lint:
-	@splint -retvalint -I $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@splint -retvalint -hints -strict -I $(SRC_DIR)/*.c $(SRC_DIR)/*.h
 
-leak-check: $(BIN_DIR)/$(PROGRAM)
-	@valgrind --vgdb=no --tool=memcheck --leak-check=yes ./$(BIN_DIR)/$(PROGRAM) $(input)
+check: LOG = $(LOG_DIR)/`date +%Y-%m-%d_%H:%M:%S`
+check: CFLAGS += -pg
+check: build
+	@memusage --data=$(LOG).dat --png=$(LOG).png $(BIN_DIR)/$(PROGRAM)
+	@gprof $(BIN_DIR)/$(PROGRAM) gmon.out > $(LOG).txt
+	@valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
+		--log-file=$(LOG).log ./$(BIN_DIR)/$(PROGRAM)
 
 doc:
 	@doxygen $(DOC_DIR)/Doxyfile
@@ -49,16 +57,18 @@ test:
 	@echo "Write some tests!"
 
 checkdirs:
-	@mkdir -p $(BLD_DIR)
 	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(BLD_DIR)
 	@mkdir -p $(DOC_DIR)
-
-all: checkdirs $(BIN_DIR)/$(PROGRAM)
+	@mkdir -p $(LOG_DIR)
+	@mkdir -p $(OUT_DIR)
 
 clean:
 	@echo "Cleaning..."
 	@echo ""
-	@-cat .art/maid.ascii
-	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(DOC_DIR)/html $(DOC_DIR)/latex $(OUT_DIR)/*
+	@cat .art/maid.ascii
+	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(OUT_DIR)/* $(LOG_DIR)/* \
+		$(DOC_DIR)/html $(DOC_DIR)/latex
 	@echo ""
 	@echo "...✓ done!"
+
