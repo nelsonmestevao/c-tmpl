@@ -2,9 +2,11 @@ CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
+INCLDS  = -I $(INC_DIR)
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
+INC_DIR = includes
 LOG_DIR = log
 OUT_DIR = out
 SRC_DIR = src
@@ -18,16 +20,16 @@ vpath %.c $(SRC_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build run fmt lint check debug doc test checkdirs clean
+.PHONY: build check checkdirs clean debug doc fmt lint run test
 
 $(BLD_DIR)/%.d: %.c
-	$(CC) -M $(CFLAGS) $(INCLUDES) $< -o $@
+	$(CC) -M $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
 
 $(BLD_DIR)/%.o: %.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
+	$(CC) -c $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
+	$(CC) $(INCLDS) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
 build: checkdirs $(BIN_DIR)/$(PROGRAM)
 
@@ -36,7 +38,8 @@ run: build
 
 fmt:
 	@echo "C and Headers files:"
-	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i \
+		$(SRC_DIR)/*.c $(SRC_DIR)/*.h $(INC_DIR)/*.h
 	@echo ""
 	@echo "Shell files:"
 	@shfmt -l -w -i 2 .
