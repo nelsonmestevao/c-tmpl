@@ -1,6 +1,7 @@
 CC      = gcc
 LD      = gcc
-CFLAGS  = -O2 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -pedantic -g
+CFLAGS  = -O2 -Wall -Wextra
+CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
@@ -17,7 +18,7 @@ vpath %.c $(SRC_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build run fmt lint check doc test checkdirs clean
+.PHONY: build run fmt lint check debug doc test checkdirs clean
 
 $(BLD_DIR)/%.d: %.c
 	$(CC) -M $(CFLAGS) $(INCLUDES) $< -o $@
@@ -36,6 +37,7 @@ run: build
 fmt:
 	@echo "C and Headers files:"
 	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@echo ""
 	@echo "Shell files:"
 	@shfmt -l -w -i 2 .
 
@@ -49,6 +51,10 @@ check: build
 	@gprof $(BIN_DIR)/$(PROGRAM) gmon.out > $(LOG).txt
 	@valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
 		--log-file=$(LOG).log ./$(BIN_DIR)/$(PROGRAM)
+
+debug: CFLAGS = -Wall -Wextra -ansi -pedantic -O0 -g
+debug: build
+	gdb ./$(BIN_DIR)/$(PROGRAM)
 
 doc:
 	@doxygen $(DOC_DIR)/Doxyfile
@@ -67,7 +73,7 @@ clean:
 	@echo "Cleaning..."
 	@echo ""
 	@cat .art/maid.ascii
-	@-rm -rd $(BLD_DIR)/* $(BIN_DIR)/* $(OUT_DIR)/* $(LOG_DIR)/* \
+	@-rm -rf $(BLD_DIR)/* $(BIN_DIR)/* $(OUT_DIR)/* $(LOG_DIR)/* \
 		$(DOC_DIR)/html $(DOC_DIR)/latex
 	@echo ""
 	@echo "...✓ done!"
