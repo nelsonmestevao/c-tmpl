@@ -39,7 +39,7 @@ run: build
 fmt:
 	@echo "C and Headers files:"
 	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i \
-		$(SRC_DIR)/*.c $(SRC_DIR)/*.h $(INC_DIR)/*.h
+		$(SRC_DIR)/* $(INC_DIR)/*
 	@echo ""
 	@echo "Shell files:"
 	@shfmt -l -w -i 2 .
