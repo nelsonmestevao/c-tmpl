@@ -45,7 +45,8 @@ fmt:
 	@shfmt -l -w -i 2 .
 
 lint:
-	@splint -retvalint -hints -I $(SRC_DIR)/*.c $(SRC_DIR)/*.h
+	@splint -retvalint -hints -I $(INC_DIR) \
+		$(SRC_DIR)/*
 
 check: LOG = $(LOG_DIR)/`date +%Y-%m-%d_%H:%M:%S`
 check: CFLAGS += -pg
