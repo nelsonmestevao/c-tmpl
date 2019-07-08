@@ -1,0 +1,41 @@
+# use the official gcc image, based on debian
+# can use verions as well, like gcc:5.2
+# see https://hub.docker.com/_/gcc/
+image: gcc:9.1.0
+
+stages:
+  - build
+  - test
+  - docs
+
+build:
+  stage: build
+  before_script:
+    - apt update && apt -y install make autoconf
+  script:
+    - make build
+  artifacts:
+    paths:
+      - bin
+  cache:
+    paths:
+      - build
+
+test:
+  stage: test
+  script:
+    - make test
+
+docs:
+  stage: docs
+  before_script:
+    - apt update && apt -y install doxygen
+  script:
+    - make doc
+  only:
+    - merge_request
+  artifacts:
+    paths:
+      - docs/html
+      - docs/latex
+
