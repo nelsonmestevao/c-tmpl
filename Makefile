@@ -20,7 +20,7 @@ vpath %.c $(SRC_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build check checkdirs clean debug doc fmt lint run test
+.PHONY: build check setup clean debug doc fmt lint run test
 
 $(BLD_DIR)/%.d: %.c
 	$(CC) -M $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
@@ -31,7 +31,7 @@ $(BLD_DIR)/%.o: %.c
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	$(CC) $(INCLDS) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
-build: checkdirs $(BIN_DIR)/$(PROGRAM)
+build: setup $(BIN_DIR)/$(PROGRAM)
 
 run: build
 	@./$(BIN_DIR)/$(PROGRAM)
@@ -66,7 +66,7 @@ doc:
 test:
 	@echo "Write some tests!"
 
-checkdirs:
+setup:
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(BLD_DIR)
 	@mkdir -p $(DOC_DIR)
