@@ -14,10 +14,10 @@ INC_DIR = includes
 LOG_DIR = log
 OUT_DIR = out
 SRC_DIR = src
-UTI_DIR = scripts
 TST_DIR = tests
+UTI_DIR = scripts
 #------------------------------------------------------------------------------
-TRASH   = $(BIN_DIR) $(BLD_DIR) $(DOC_DIR) $(OUT_DIR) $(LOG_DIR)
+TRASH   = $(BIN_DIR) $(BLD_DIR) $(DOC_DIR)/{html,latex} $(LOG_DIR) $(OUT_DIR)
 #------------------------------------------------------------------------------
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
@@ -83,7 +83,7 @@ debug: build
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
 doc:
-	@doxygen
+	@doxygen $(DOC_DIR)/Doxyfile
 
 test:
 	@echo "Write some tests!"
