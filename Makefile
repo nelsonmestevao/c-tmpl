@@ -1,8 +1,12 @@
+#==============================================================================
+SHELL   = zsh
+#------------------------------------------------------------------------------
 CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
 INCLDS  = -I $(INC_DIR)
+#------------------------------------------------------------------------------
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
@@ -10,11 +14,16 @@ INC_DIR = includes
 LOG_DIR = log
 OUT_DIR = out
 SRC_DIR = src
+UTI_DIR = scripts
 TST_DIR = tests
+#------------------------------------------------------------------------------
+TRASH   = $(BIN_DIR) $(BLD_DIR) $(DOC_DIR) $(OUT_DIR) $(LOG_DIR)
+#------------------------------------------------------------------------------
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
 DEPS    = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
 PROGRAM = program
+#==============================================================================
 
 vpath %.c $(SRC_DIR)
 
@@ -22,14 +31,24 @@ vpath %.c $(SRC_DIR)
 
 .PHONY: build check setup clean debug doc fmt lint run test
 
+define show
+	@./$(UTI_DIR)/change_output_color.sh $(1) $(2)
+endef
+
 $(BLD_DIR)/%.d: %.c
+	$(call show,cyan)
 	$(CC) -M $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
+	$(call show,,reset)
 
 $(BLD_DIR)/%.o: %.c
+	$(call show,blue)
 	$(CC) -c $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
+	$(call show,,reset)
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
+	$(call show,green,bold)
 	$(CC) $(INCLDS) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
+	$(call show,,reset)
 
 build: setup $(BIN_DIR)/$(PROGRAM)
 
@@ -38,11 +57,14 @@ run: build
 
 fmt:
 	@echo "C and Headers files:"
-	@-clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -verbose -i \
-		$(SRC_DIR)/* $(INC_DIR)/*
+	$(call show,yellow)
+	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
+	$(call show,,reset)
 	@echo ""
 	@echo "Shell files:"
+	$(call show,yellow)
 	@shfmt -l -w -i 2 .
+	$(call show,,reset)
 
 lint:
 	@splint -retvalint -hints -I $(INC_DIR) \
@@ -61,7 +83,7 @@ debug: build
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
 doc:
-	@doxygen $(DOC_DIR)/Doxyfile
+	@doxygen
 
 test:
 	@echo "Write some tests!"
@@ -69,7 +91,6 @@ test:
 setup:
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(BLD_DIR)
-	@mkdir -p $(DOC_DIR)
 	@mkdir -p $(LOG_DIR)
 	@mkdir -p $(OUT_DIR)
 
@@ -77,8 +98,6 @@ clean:
 	@echo "Cleaning..."
 	@echo ""
 	@cat .art/maid.ascii
-	@-rm -rf $(BLD_DIR)/* $(BIN_DIR)/* $(OUT_DIR)/* $(LOG_DIR)/* \
-		$(DOC_DIR)/html $(DOC_DIR)/latex
-	@echo ""
+	@-rm -rf $(TRASH)
 	@echo "...✓ done!"
 

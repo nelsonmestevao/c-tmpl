@@ -6,6 +6,7 @@ image: gcc:9.1.0
 stages:
   - build
   - test
+  - style
   - docs
 
 build:
@@ -25,6 +26,13 @@ test:
   stage: test
   script:
     - make test
+
+lint:
+  stage: style
+  before_script:
+    - apt update && apt -y install splint
+  script:
+    - make lint
 
 docs:
   stage: docs

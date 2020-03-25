@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
     printf("You entered in reverse order:\n\n");
 
-    while (argc--) {
+    while (argc-- != 0) {
         printf("* %s\n", argv[argc]);
     }
 
