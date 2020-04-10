@@ -53,7 +53,7 @@ $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 build: setup $(BIN_DIR)/$(PROGRAM)
 
 run: build
-	@./$(BIN_DIR)/$(PROGRAM)
+	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
 fmt:
 	@echo "C and Headers files:"
@@ -100,4 +100,3 @@ clean:
 	@cat .art/maid.ascii
 	@-rm -rf $(TRASH)
 	@echo "...✓ done!"
-
