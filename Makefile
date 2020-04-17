@@ -63,7 +63,7 @@ fmt:
 	@echo ""
 	@echo "Shell files:"
 	$(call show,yellow)
-	@shfmt -l -w -i 2 .
+	@shfmt -f -w -ci .
 	$(call show,,reset)
 
 lint:

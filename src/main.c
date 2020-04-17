@@ -87,8 +87,8 @@ int main(int argc, char **argv) {
     printf("\n");
 
     printf("OUTPUT_FILE = %s\nVERBOSE = %s\nSILENT = %s\n",
-               arguments.output_file, arguments.verbose ? "yes" : "no",
-               arguments.silent ? "yes" : "no");
+           arguments.output_file, arguments.verbose ? "yes" : "no",
+           arguments.silent ? "yes" : "no");
 
     return 0;
 }
