@@ -37,17 +37,17 @@ endef
 
 $(BLD_DIR)/%.d: %.c
 	$(call show,cyan)
-	$(CC) -M $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
+	$(CC) -M $(INCLDS) $(CFLAGS) $< -o $@
 	$(call show,,reset)
 
 $(BLD_DIR)/%.o: %.c
 	$(call show,blue)
-	$(CC) -c $(INCLDS) $(CFLAGS) $(INCLUDES) $< -o $@
+	$(CC) -c $(INCLDS) $(CFLAGS) $< -o $@
 	$(call show,,reset)
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	$(call show,green,bold)
-	$(CC) $(INCLDS) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
+	$(CC) $(INCLDS) $(CFLAGS) -o $@ $(OBJS)
 	$(call show,,reset)
 
 build: setup $(BIN_DIR)/$(PROGRAM)
