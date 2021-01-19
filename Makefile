@@ -55,7 +55,8 @@ build: setup $(BIN_DIR)/$(PROGRAM)
 run: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
-fmt:
+fmt: format
+format:
 	@echo "C and Headers files:"
 	$(call show,yellow)
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
