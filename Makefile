@@ -42,7 +42,7 @@ vpath %.c $(SRC_DIR)
 .PHONY: build check setup clean debug doc fmt lint run test
 
 define show
-	@echo -en "$(shell $(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3))"
+	@./$(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3)
 endef
 
 $(BLD_DIR)/%.d: %.c
