@@ -9,10 +9,14 @@ stages:
   - style
   - docs
 
-build:
+compile:
   stage: build
   script:
-    - make build
+    - make compile
+  only:
+    - merge_request
+    - main
+    - master
   cache:
     paths:
       - build
@@ -21,6 +25,8 @@ test:
   stage: test
   script:
     - make test
+  only:
+    - merge_request
 
 lint:
   stage: style
@@ -28,8 +34,10 @@ lint:
     - apt update && apt -y install splint
   script:
     - make lint
+  only:
+    - merge_request
 
-docs:
+doxygen:
   stage: docs
   before_script:
     - apt update && apt -y install doxygen
@@ -41,4 +49,18 @@ docs:
     paths:
       - docs/html
       - docs/latex
+
+pages:
+  stage: docs
+  before_script:
+    - apt update && apt -y install doxygen
+  script:
+    - make documentation
+    - mv docs/html public
+  only:
+    - main
+    - master
+  artifacts:
+    paths:
+      - public/
 
