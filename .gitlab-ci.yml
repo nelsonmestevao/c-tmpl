@@ -9,6 +9,9 @@ stages:
   - style
   - docs
 
+variables:
+  TERM: dumb
+
 compile:
   stage: build
   script:
