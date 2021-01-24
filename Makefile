@@ -66,11 +66,11 @@ run go: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
 format fmt:
-	$(call show,yellow,reset,"C and Headers files")
+	-$(call show,yellow,reset,"C and Headers files")
 	@echo ":"
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
 	@echo ""
-	$(call show,yellow,reset,"Shell files")
+	-$(call show,yellow,reset,"Shell files")
 	@echo ":"
 	@shfmt -w -i 2 -l -ci .
 
