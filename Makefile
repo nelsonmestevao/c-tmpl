@@ -46,17 +46,17 @@ define show
 endef
 
 $(BLD_DIR)/%.d: %.c
-	$(call show,cyan,reset,"Generating $(shell basename $@) ... ")
+	-$(call show,cyan,reset,"Generating $(shell basename $@) ... ")
 	@$(CC) -M $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
 	@echo -e "$(OK_STRING)"
 
 $(BLD_DIR)/%.o: %.c
-	$(call show,blue,reset,"Building $(shell basename $@) ... ")
+	-$(call show,blue,reset,"Building $(shell basename $@) ... ")
 	@$(CC) -c $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
 	@echo -e "$(OK_STRING)"
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
-	$(call show,green,bold,"Compiling $(shell basename $@) ... ")
+	-$(call show,green,bold,"Compiling $(shell basename $@) ... ")
 	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
 	@echo -e "$(OK_STRING)"
 
