@@ -5,7 +5,7 @@
 #include <string.h>
 
 const char *argp_program_version = "exemplo 0.1.0";
-const char *argp_program_bug_address = "hello@estevao.xyz";
+const char *argp_program_bug_address = "hello@estevao.org";
 
 /* Program documentation. */
 static char doc[] = "exemplo FIXME";
