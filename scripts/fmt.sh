@@ -123,4 +123,4 @@ function format() {
   fi
 }
 
-[ "$0" = "${BASH_SOURCE[0]}" ] && format "$@"
+[ "$0" = "${BASH_SOURCE[0]}" ] && format "$@" || true
