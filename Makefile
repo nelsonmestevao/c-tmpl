@@ -42,28 +42,22 @@ vpath %.c $(SRC_DIR)
 .PHONY: build check setup clean debug doc fmt lint run test
 
 define show
-	@./$(UTI_DIR)/change_output_color.sh $(1) $(2)
+	@echo -en "$(shell $(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3))"
 endef
 
 $(BLD_DIR)/%.d: %.c
-	$(call show,cyan)
-	@echo -en "Generating $(shell basename $@) ... "
+	$(call show,cyan,reset,"Generating $(shell basename $@) ... ")
 	@$(CC) -M $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
-	$(call show,,reset)
 	@echo -e "$(OK_STRING)"
 
 $(BLD_DIR)/%.o: %.c
-	$(call show,blue)
-	@echo -en "Building $(shell basename $@) ... "
+	$(call show,blue,reset,"Building $(shell basename $@) ... ")
 	@$(CC) -c $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
-	$(call show,,reset)
 	@echo -e "$(OK_STRING)"
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
-	$(call show,green,bold)
-	@echo -en "Compiling $(shell basename $@) ... "
+	$(call show,green,bold,"Compiling $(shell basename $@) ... ")
 	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
-	$(call show,,reset)
 	@echo -e "$(OK_STRING)"
 
 build compile: setup $(BIN_DIR)/$(PROGRAM)
@@ -72,15 +66,13 @@ run go: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
 format fmt:
-	@echo "C and Headers files:"
-	$(call show,yellow)
+	$(call show,yellow,reset,"C and Headers files")
+	@echo ":"
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
-	$(call show,,reset)
 	@echo ""
-	@echo "Shell files:"
-	$(call show,yellow)
+	$(call show,yellow,reset,"Shell files")
+	@echo ":"
 	@shfmt -w -i 2 -l -ci .
-	$(call show,,reset)
 
 lint:
 	@splint -retvalint -hints -I $(INC_DIR) \
