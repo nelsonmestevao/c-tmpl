@@ -13,7 +13,7 @@ CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
-#LIBS    = `pkg-config --cflags --libs glib-2.0`
+LIBS    = `pkg-config --cflags --libs glib-2.0`
 INCLDS  = -I $(INC_DIR)
 #------------------------------------------------------------------------------
 BIN_DIR = bin
