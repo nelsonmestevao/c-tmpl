@@ -1,10 +1,19 @@
 #==============================================================================
 SHELL   = bash
 #------------------------------------------------------------------------------
+NO_COLOR=\x1b[0m
+OK_COLOR=\x1b[32m
+ERROR_COLOR=\x1b[31m
+WARN_COLOR=\x1b[33m
+OK_STRING=$(OK_COLOR)✓$(NO_COLOR)
+ERROR_STRING=$(ERROR_COLOR)⨯$(NO_COLOR)
+WARN_STRING=$(WARN_COLOR)problems$(NO_COLOR)
+#------------------------------------------------------------------------------
 CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
+LIBS    = `pkg-config --cflags --libs glib-2.0`
 INCLDS  = -I $(INC_DIR)
 #------------------------------------------------------------------------------
 BIN_DIR = bin
@@ -22,6 +31,7 @@ TRASH   = $(BIN_DIR) $(BLD_DIR) $(DOC_DIR)/{html,latex} $(LOG_DIR) $(OUT_DIR)
 SRC     = $(wildcard $(SRC_DIR)/*.c)
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
 DEPS    = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
+#------------------------------------------------------------------------------
 PROGRAM = program
 #==============================================================================
 
@@ -37,26 +47,31 @@ endef
 
 $(BLD_DIR)/%.d: %.c
 	$(call show,cyan)
-	$(CC) -M $(INCLDS) $(CFLAGS) $< -o $@
+	@echo -en "Generating $(shell basename $@) ... "
+	@$(CC) -M $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
 	$(call show,,reset)
+	@echo -e "$(OK_STRING)"
 
 $(BLD_DIR)/%.o: %.c
 	$(call show,blue)
-	$(CC) -c $(INCLDS) $(CFLAGS) $< -o $@
+	@echo -en "Building $(shell basename $@) ... "
+	@$(CC) -c $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
 	$(call show,,reset)
+	@echo -e "$(OK_STRING)"
 
 $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	$(call show,green,bold)
-	$(CC) $(INCLDS) $(CFLAGS) -o $@ $(OBJS)
+	@echo -en "Compiling $(shell basename $@) ... "
+	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
 	$(call show,,reset)
+	@echo -e "$(OK_STRING)"
 
-build: setup $(BIN_DIR)/$(PROGRAM)
+build compile: setup $(BIN_DIR)/$(PROGRAM)
 
-run: build
+run go: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
-fmt: format
-format:
+format fmt:
 	@echo "C and Headers files:"
 	$(call show,yellow)
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
@@ -83,7 +98,7 @@ debug: CFLAGS = -Wall -Wextra -ansi -pedantic -O0 -g
 debug: build
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
-doc:
+documentation doc:
 	@doxygen $(DOC_DIR)/Doxyfile
 
 test:
@@ -96,8 +111,8 @@ setup:
 	@mkdir -p $(OUT_DIR)
 
 clean:
-	@echo "Cleaning..."
-	@echo ""
 	@cat .art/maid.ascii
+	@echo -n "Cleaning ... "
 	@-rm -rf $(TRASH)
-	@echo "...✓ done!"
+	@echo -e "$(OK_STRING)"
+
