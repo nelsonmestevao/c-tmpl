@@ -39,8 +39,6 @@ vpath %.c $(SRC_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build check setup clean debug doc fmt lint run test
-
 define show
 	@./$(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3)
 endef
@@ -60,11 +58,13 @@ $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
 	@echo -e "$(OK_STRING)"
 
+.PHONY: build # Compile the binary program
 build compile: setup $(BIN_DIR)/$(PROGRAM)
 
 run go: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
+.PHONY: format fmt # Format source files and scripts
 format fmt:
 	-$(call show,yellow,reset,"C and Headers files")
 	@echo ":"
@@ -74,6 +74,7 @@ format fmt:
 	@echo ":"
 	@shfmt -w -i 2 -l -ci .
 
+.PHONY: lint # Lint your code
 lint:
 	@splint -retvalint -hints -I $(INC_DIR) \
 		$(SRC_DIR)/*
@@ -86,13 +87,16 @@ check: build
 	@valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
 		--log-file=$(LOG).log ./$(BIN_DIR)/$(PROGRAM)
 
+.PHONY: debug # Run your program with the debugger
 debug: CFLAGS = -Wall -Wextra -ansi -pedantic -O0 -g
 debug: build
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
+.PHONY: doc # Generate the documentation
 documentation doc:
 	@doxygen $(DOC_DIR)/Doxyfile
 
+.PHONY: help # Generate list of targets with descriptions
 test:
 	@echo "Write some tests!"
 
@@ -102,9 +106,13 @@ setup:
 	@mkdir -p $(LOG_DIR)
 	@mkdir -p $(OUT_DIR)
 
+.PHONY: clean # Delete build artifacts
 clean:
 	@cat .art/maid.ascii
 	@echo -n "Cleaning ... "
 	@-rm -rf $(TRASH)
 	@echo -e "$(OK_STRING)"
 
+.PHONY: help # Generate list of targets with descriptions
+help:
+	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/    \1 \t \2/'
