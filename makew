@@ -21,6 +21,8 @@ function display_help() {
   $(help_title_section Commands)
 $(make help)
 
+    DEFAULT:$(grep '.DEFAULT_GOAL' Makefile | cut -d= -f2)
+
   $(help_title_section Options)
     -h --help         Show this screen.
     -v --version      Show version.
