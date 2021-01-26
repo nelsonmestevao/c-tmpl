@@ -96,7 +96,7 @@ debug: build
 documentation doc:
 	@doxygen $(DOC_DIR)/Doxyfile
 
-.PHONY: help # Generate list of targets with descriptions
+.PHONY: test # Run the tests
 test:
 	@echo "Write some tests!"
 
