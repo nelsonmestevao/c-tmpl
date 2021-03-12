@@ -34,9 +34,9 @@ __print_error_stream() {
 
 __print_result() {
   if [ "$1" -eq 0 ]; then
-    echo -e "  $2 ${GREEN}✓${RESET}"
+    echo -e " • $2 ${GREEN}✓${RESET}"
   else
-    echo -e "  $2 ${RED}⨯${RESET}"
+    echo -e " • $2 ${RED}⨯${RESET}"
   fi
 
   return "$1"
@@ -75,7 +75,7 @@ __show_spinner() {
 
   # Display spinner while the commands are being executed.
   while kill -0 "$PID" &>/dev/null; do
-    frameText="  $MSG ${FRAMES:i++%NUMBER_OR_FRAMES:1}"
+    frameText=" • $MSG ${FRAMES:i++%NUMBER_OR_FRAMES:1}"
 
     # Print frame text.
     if [ "${CI:-false}" != "true" ]; then
@@ -133,4 +133,4 @@ function execute() {
   return $exitCode
 }
 
-[ "$0" = "${BASH_SOURCE[0]}" ] && display_version 0.4.1 || true
+[ "$0" = "${BASH_SOURCE[0]}" ] && display_version 0.5.0 || true

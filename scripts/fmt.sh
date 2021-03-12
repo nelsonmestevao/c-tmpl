@@ -116,7 +116,7 @@ function format() {
 
   if [[ ${#TEXT[@]} -gt 0 ]]; then
     for text in "${TEXT[@]}"; do
-      echo -en "$text"
+      echo "$text"
     done
 
     echo -en '\033[0;0m'

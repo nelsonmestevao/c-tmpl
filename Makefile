@@ -40,7 +40,7 @@ vpath %.c $(SRC_DIR)
 .DEFAULT_GOAL = build
 
 define show
-	@./$(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3)
+@./$(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3)
 endef
 
 $(BLD_DIR)/%.d: %.c
