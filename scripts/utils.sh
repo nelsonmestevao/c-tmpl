@@ -16,6 +16,18 @@ function not_installed() {
   [ ! -x "$(command -v "$@")" ]
 }
 
+function load_env_file() {
+  local file="${1:-.env}"
+  if [ -f "$file" ]; then
+    log_info "Environment" "Loading ${BLUE}${file}${RESET}..." $(cat "${file}")
+    set -o allexport
+    source "$file"
+    set +o allexport
+  else
+    log_warn "${file} file not found, skipping..."
+  fi
+}
+
 function ask_for_sudo() {
   # Ask for the administrator password upfront.
   sudo -v &>/dev/null
@@ -40,4 +52,4 @@ function ensure_confirmation() {
   fi
 }
 
-[ "$0" = "${BASH_SOURCE[0]}" ] && display_version 0.5.2 || true
+[ "$0" = "${BASH_SOURCE[0]}" ] && display_version 0.5.5 || true
