@@ -115,4 +115,4 @@ clean:
 
 .PHONY: help # Generate list of targets with descriptions
 help:
-	@grep '^.PHONY: .* #' Makefile | sed 's/\.PHONY: \(.*\) # \(.*\)/    \1 \t \2/'
+	@grep '^.PHONY: .* #' $(MAKEFILE_LIST) | sed 's/\.PHONY: \(.*\) # \(.*\)/    \1 \t \2/'
