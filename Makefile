@@ -58,14 +58,17 @@ $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
 	@echo -e "$(OK_STRING)"
 
-.PHONY: build # Compile the binary program
-build compile: setup $(BIN_DIR)/$(PROGRAM)
+##@ DEVELOPMENT
+
+.PHONY: build
+build compile: setup $(BIN_DIR)/$(PROGRAM) ## Compile the binary program.
 
 run go: build
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
-.PHONY: format fmt # Format source files and scripts
-format fmt:
+.PHONY: format fmt
+format: fmt ## Format source files and scripts.
+fmt:
 	-$(call show,yellow,reset,"C and Headers files")
 	@echo ":"
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
@@ -74,8 +77,8 @@ format fmt:
 	@echo ":"
 	@shfmt -w -i 2 -l -ci .
 
-.PHONY: lint # Lint your code
-lint:
+.PHONY: lint
+lint: ## Lint the source code.
 	@splint -retvalint -hints -I $(INC_DIR) \
 		$(SRC_DIR)/*
 
@@ -87,18 +90,25 @@ check: build
 	@valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
 		--log-file=$(LOG).log ./$(BIN_DIR)/$(PROGRAM)
 
-.PHONY: debug # Run your program with the debugger
+.PHONY: debug
 debug: CFLAGS = -Wall -Wextra -ansi -pedantic -O0 -g
-debug: build
+debug: build ## Run your program with the debugger
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
-.PHONY: doc # Generate the documentation
-documentation doc:
+.PHONY: doc
+documentation doc: ## Generate the documentation
 	@doxygen $(DOC_DIR)/Doxyfile
 
-.PHONY: test # Run the tests
-test:
+.PHONY: test
+test: ## Run the tests.
 	@echo "Write some tests!"
+
+.PHONY: clean
+clean: ## Delete build artifacts.
+	@cat .art/maid.ascii
+	@echo -n "Cleaning ... "
+	@-rm -rf $(TRASH)
+	@echo -e "$(OK_STRING)"
 
 setup:
 	@mkdir -p $(BIN_DIR)
@@ -106,13 +116,17 @@ setup:
 	@mkdir -p $(LOG_DIR)
 	@mkdir -p $(OUT_DIR)
 
-.PHONY: clean # Delete build artifacts
-clean:
-	@cat .art/maid.ascii
-	@echo -n "Cleaning ... "
-	@-rm -rf $(TRASH)
-	@echo -e "$(OK_STRING)"
+##@ OTHERS
 
-.PHONY: help # Generate list of targets with descriptions
-help:
-	@grep '^.PHONY: .* #' $(MAKEFILE_LIST) | sed 's/\.PHONY: \(.*\) # \(.*\)/    \1 \t \2/'
+.PHONY: help
+help: ## Display this help message.
+	@awk 'BEGIN {                                            \
+		FS = ":.*##";                                        \
+		printf "\nUsage:\n  make \033[36m<target>\033[0m\n"; \
+		}                                                    \
+		/^[a-zA-Z_0-9-]+:.*?##/ {                            \
+		printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2;      \
+		}                                                    \
+		/^##@/ {                                             \
+		printf "\n\033[1m%s\033[0m\n", substr($$0, 5);       \
+		}' $(MAKEFILE_LIST)
