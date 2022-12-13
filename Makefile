@@ -43,6 +43,8 @@ define show
 @./$(UTI_DIR)/fmt.sh --color $(1) --type $(2) $(3)
 endef
 
+##@ BUILD
+
 $(BLD_DIR)/%.d: %.c
 	-$(call show,cyan,reset,"Generating $(shell basename $@) ... ")
 	@$(CC) -M $(INCLDS) $(LIBS) $(CFLAGS) $< -o $@
@@ -58,17 +60,17 @@ $(BIN_DIR)/$(PROGRAM): $(DEPS) $(OBJS)
 	@$(CC) $(INCLDS) $(LIBS) $(CFLAGS) -o $@ $(OBJS)
 	@echo -e "$(OK_STRING)"
 
-##@ DEVELOPMENT
+.PHONY: build
+build: setup $(BIN_DIR)/$(PROGRAM) ## Compile the binary program.
 
 .PHONY: build
-build compile: setup $(BIN_DIR)/$(PROGRAM) ## Compile the binary program.
-
-run go: build
+run: build ## Run the binary program.
 	@./$(BIN_DIR)/$(PROGRAM) argumento1 "string 1" "string 2"
 
-.PHONY: format fmt
-format: fmt ## Format source files and scripts.
-fmt:
+##@ DEVELOPMENT
+
+.PHONY: fmt
+fmt: ## Format source files and scripts.
 	-$(call show,yellow,reset,"C and Headers files")
 	@echo ":"
 	@-clang-format -verbose -i $(SRC_DIR)/* $(INC_DIR)/*
@@ -95,8 +97,8 @@ debug: CFLAGS = -Wall -Wextra -ansi -pedantic -O0 -g
 debug: build ## Run your program with the debugger
 	gdb ./$(BIN_DIR)/$(PROGRAM)
 
-.PHONY: doc
-documentation doc: ## Generate the documentation
+.PHONY: docs
+docs: ## Generate the documentation
 	@doxygen $(DOC_DIR)/Doxyfile
 
 .PHONY: test
